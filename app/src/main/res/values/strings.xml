@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="hourly_forecast">Hourly Forecast</string>
+    <string name="weekly_forecast">Weekly Forecast</string>
+    <string name="forecast_report">Forecast Report</string>
+    <string name="today">Today</string>
+    <string name="next_forecast">Next Forecast</string>
+    <string name="search_text">Find the area or the city that you want to know the detailed weather info at this time</string>
+    <string name="pick_location">Pick Location</string>
+    <string name="search">Search</string>
+    <string name="precipitation">PRECIPITATION</string>
+    <string name="uv_index">UV INDEX</string>
+    <string name="visibility">VISIBILITY</string>
+    <string name="pressure">PRESSURE</string>
+    <string name="humidity">HUMIDITY</string>
+    <string name="wind">WIND</string>
+    <string name="sunrise">SUNRISE</string>
+    <string name="sunset">SUNSET</string>
+    <string name="cities_should_be_no_more_than_5">"Cities should be no more than 5 "</string>
+    <string name="location_access_is_mandatory_to_use_this_feature">Location access is mandatory to use this feature!!</string>
+</resources>
