@@ -2,6 +2,7 @@ package com.example.weatherapp.app.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -28,10 +29,11 @@ import com.example.weatherapp.ui.theme.fabBackground
 import com.example.weatherapp.ui.theme.iconColor
 
 @Composable
-fun FabButton(onClick: () -> Unit) {
+fun FabButton(modifier: Modifier,onClick: () -> Unit) {
 
 
     FloatingActionButton(
+        modifier =modifier,
         onClick = onClick,
         shape = CircleShape,
 //        modifier = Modifier

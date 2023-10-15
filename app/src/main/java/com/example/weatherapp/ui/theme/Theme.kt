@@ -64,7 +64,8 @@ fun WeatherAppTheme(
             val window = (view.context as Activity).window
 
             window.statusBarColor = Color.Transparent.toArgb()            //status bar color
-            window.navigationBarColor = backgroundColor.toArgb()       //bottom navigation bar color
+            window.navigationBarColor =
+                Color.Transparent.copy(alpha = 0.01f).toArgb()       //bottom navigation bar color
 
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }

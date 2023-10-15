@@ -72,8 +72,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0-alpha01")
 
@@ -94,5 +94,22 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:20.0.0")
 
     implementation ("com.google.accompanist:accompanist-permissions:0.20.0")
+
+    // Navigator
+    implementation ("cafe.adriel.voyager:voyager-navigator:1.0.0-rc03")
+    // BottomSheetNavigator
+    implementation ("cafe.adriel.voyager:voyager-bottom-sheet-navigator:1.0.0-rc03")
+    // TabNavigator
+    implementation ("cafe.adriel.voyager:voyager-tab-navigator:1.0.0-rc03")
+    // Transitions
+    implementation ("cafe.adriel.voyager:voyager-transitions:1.0.0-rc03")
+    // Android ViewModel integration
+    implementation ("cafe.adriel.voyager:voyager-androidx:1.0.0-rc03")
+    // Hilt integration
+    implementation ("cafe.adriel.voyager:voyager-hilt:1.0.0-rc03")
+
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.33.2-alpha")
+
+//    implementation("androidx.compose.material:material:1.5.3")
 
 }

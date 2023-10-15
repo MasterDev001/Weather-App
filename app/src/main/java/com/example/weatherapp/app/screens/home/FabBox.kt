@@ -1,15 +1,19 @@
 package com.example.weatherapp.app.screens.home
 
+import android.annotation.SuppressLint
 import android.graphics.Point
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.dp
+import com.example.weatherapp.app.screens.fabBoxSize_100
 import com.example.weatherapp.ui.theme.backgroundColor
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun FabBox() {
 
@@ -26,11 +30,11 @@ fun FabBox() {
     val mSecondCurveControlPoint1 = Point()
     val mSecondCurveControlPoint2 = Point()
     var mNavigationBarWidth: Int = 0
-    var mNavigationBarHeight: Int
+    var mNavigationBarHeight =0
 
         Canvas(
             modifier = Modifier
-                .size(100.dp)
+                .size(fabBoxSize_100)
 
         ) {
             val width = size.width

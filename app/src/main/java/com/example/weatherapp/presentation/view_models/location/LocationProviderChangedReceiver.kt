@@ -24,7 +24,6 @@ class LocationProviderChangedReceiver : BroadcastReceiver() {
                 isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-                Log.i("TAG1212", "Location Providers changed, is GPS Enabled: $isGpsEnabled")
 
                 if (isGpsEnabled && isNetworkEnabled) {
                     locationListener?.onEnabled()

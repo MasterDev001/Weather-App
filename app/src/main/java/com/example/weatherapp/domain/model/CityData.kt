@@ -1,14 +1,13 @@
 package com.example.weatherapp.domain.model
 
 data class CityData(
-    val id: Int,
+    val key: String,
     val cityName: String,
     val country: String,
-    val admin1: String,
-    val countryCode: String,
+    val region: String,
     val latitude: Double,
     val longitude: Double,
-    val weatherType: WeatherType?=null,
+    val conditionData: ConditionData?=null,
     val temperatureMin:Int?=null,
     val temperatureMax:Int?=null,
     val currentTemperature:Int?=null,

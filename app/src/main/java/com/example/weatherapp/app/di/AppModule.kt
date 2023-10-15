@@ -10,7 +10,6 @@ import com.example.weatherapp.entity.local.MyDatabase
 import com.example.weatherapp.entity.location.LocationTracker
 import com.example.weatherapp.entity.location.LocationTrackerImpl
 import com.example.weatherapp.entity.remote.WeatherApi
-import com.example.weatherapp.entity.remote.CityApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module
@@ -30,16 +29,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideWeatherApi(): WeatherApi {
-        return Retrofit.Builder().baseUrl("https://api.open-meteo.com/")
+        return Retrofit.Builder().baseUrl("https://api.weatherapi.com/")
             .addConverterFactory(MoshiConverterFactory.create()).build().create()
     }
 
-    @Provides
-    @Singleton
-    fun provideCityApi(): CityApi {
-        return Retrofit.Builder().baseUrl("https://geocoding-api.open-meteo.com/")
-            .addConverterFactory(MoshiConverterFactory.create()).build().create()
-    }
 
     @Provides
     @Singleton

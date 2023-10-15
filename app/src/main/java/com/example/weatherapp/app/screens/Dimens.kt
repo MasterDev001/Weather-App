@@ -12,6 +12,8 @@ val fontSize_34=34.sp
 val fontSize_52=52.sp
 val fontSize_24=24.sp
 val fontSize_12=12.sp
+val fontSize_13=13.sp
+val fontSize_16=16.sp
 val fontSize_28=28.sp
 val fontSize_20=20.sp
 val fontSize_22=22.sp
@@ -34,6 +36,8 @@ val imageSize_24=24.dp
 val imageSize_100=100.dp
 val imageSize_150=150.dp
 val imageSize_76=76.dp
+val imageSize_58=58.dp
+val imageSize_52=52.dp
 
 val cardSize_50=50.dp
 val cardSize_52=52.dp
@@ -44,6 +48,7 @@ val card_Sizes_46=46.dp
 val card_Sizes_44=44.dp
 
 val lottieSize_220=220.dp
+val lottieSize_24=24.dp
 
 val customElevationSize_300=300.dp
 val customElevationSize_200=200.dp
@@ -51,3 +56,8 @@ val customElevationSize_250=250.dp
 
 val topAppBarHeight_64=64.dp
 
+val progressBarSize_130=130.dp
+
+val progressBarStrokeWith_8=8.dp
+
+val fabBoxSize_100=100.dp

@@ -1,6 +1,9 @@
 package com.example.weatherapp.domain.model
 
 data class WeatherData(
-    val hourlyData: List<HourlyData>,
-    val dailyData: List<DailyData>
+
+    val locationData: LocationData,
+    val currentData: CurrentData,
+    val dailyData: List<DailyData>,
+    val hourlyData: List<HourlyData>
 )

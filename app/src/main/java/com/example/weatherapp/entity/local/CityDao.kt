@@ -12,23 +12,23 @@ import kotlinx.coroutines.flow.Flow
 interface CityDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addCity(cityData: CityEntity):Long
+    suspend fun addCity(cityData: CityEntity): Long
 
-    @Delete
-    suspend fun deleteCity(cityData: CityEntity):Int
+    @Query("DELETE FROM cityTable WHERE `key`=:key")
+     fun deleteCity(key: String): Int
 
-    @Delete
-    suspend fun deleteCityList(cityList:List<CityEntity>):Int
-
-    @Query("SELECT * FROM cityTable WHERE id=:id")
-    suspend fun getCity(id: Int): CityEntity
+    @Query("SELECT * FROM cityTable WHERE `key`=:key")
+    suspend fun getCity(key: String): CityEntity
 
     @Query("SELECT * FROM cityTable")
     suspend fun getAllCites(): List<CityEntity>
 
     @Query("SELECT * FROM cityTable WHERE isCurrent = 1 LIMIT 1")
-    suspend fun getCurrentCity():CityEntity
+    suspend fun getCurrentCity(): CityEntity?
+
+    @Query("UPDATE cityTable SET isCurrent = 1 WHERE `key` = :key")
+    suspend fun selectCurrentCity(key: String): Int
 
     @Query("UPDATE cityTable SET isCurrent = 0")
-    suspend fun prepareToSelectCurrent():Int
+    suspend fun prepareToSelectCurrent(): Int
 }

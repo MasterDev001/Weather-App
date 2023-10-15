@@ -7,12 +7,15 @@ interface LocationContract {
     sealed interface Intent {
         class AddCityWithName(val cityName:String) : Intent
         object AddCityWithLocation:Intent
+        class ChangeCurrentCity(val cityKey:String):Intent
+        object NavigateToHome:Intent
+        class DeleteCity(val cityData: CityData,val index: Int): Intent
     }
 
     data class UiState(
         var cityData:List<CityData>?=null,
-        var isLoading: Boolean? = false,
-        var message: String? = null,
+        var isLoading: Boolean = false,
+        var errorMessage: String? = null,
     )
 
 }

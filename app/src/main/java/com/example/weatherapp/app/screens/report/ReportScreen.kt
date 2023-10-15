@@ -24,9 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.hilt.getViewModel
 import com.example.weatherapp.R
+import com.example.weatherapp.app.navigation.AppScreen
 import com.example.weatherapp.app.screens.ElevationCustom
-import com.example.weatherapp.app.screens.SmallItem
+import com.example.weatherapp.app.screens.HourlyItem
 import com.example.weatherapp.app.screens.fontSize_22
 import com.example.weatherapp.app.screens.fontSize_24
 import com.example.weatherapp.app.screens.padding_16
@@ -34,100 +36,151 @@ import com.example.weatherapp.app.screens.padding_28
 import com.example.weatherapp.app.screens.padding_32
 import com.example.weatherapp.app.screens.padding_5
 import com.example.weatherapp.app.screens.topAppBarHeight_64
+import com.example.weatherapp.domain.model.WeatherData
+import com.example.weatherapp.presentation.view_models.report.ReportContract
+import com.example.weatherapp.presentation.view_models.report.ReportViewModel
+import com.example.weatherapp.presentation.view_models.report.ReportViewModelImpl
 import com.example.weatherapp.ui.theme.backgroundColor
 import com.example.weatherapp.ui.theme.colorWhite
+import java.time.LocalDateTime
+import java.time.ZoneId
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Composable
-fun ReportScreen() {
+class ReportScreen(private val weatherData: WeatherData) : AppScreen() {
 
-    Scaffold(
-        Modifier.navigationBarsPadding().fillMaxSize(),
-        containerColor = backgroundColor,
+    @Composable
+    override fun Content() {
+        val viewModel: ReportViewModel = getViewModel<ReportViewModelImpl>()
+        val onEvent = viewModel::onEventDispatcher
+        ReportScreenContent(viewModel, onEvent)
+    }
+
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "NewApi")
+    @Composable
+    private fun ReportScreenContent(
+        viewModel: ReportViewModel, onEvent: (intent: ReportContract.Intent) -> Unit
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
 
-            ElevationCustom(
-                modifier = Modifier
-                    .size(220.dp)
-                    .offset(x = (40).dp, y = (-70).dp)
-                    .align(Alignment.TopEnd),
-                color = colorWhite.copy(alpha = 0.1f)
-            )
-            Column(
-                Modifier.statusBarsPadding().fillMaxSize()
-            ) {
-                Box(
+        Scaffold(
+            Modifier.fillMaxSize(),
+            containerColor = backgroundColor,
+        ) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()) {
+
+                ElevationCustom(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(topAppBarHeight_64)
+                        .size(220.dp)
+                        .offset(x = (40).dp, y = (-70).dp)
+                        .align(Alignment.TopEnd), color = colorWhite.copy(alpha = 0.1f)
+                )
+                Column(
+                    Modifier
+                        .statusBarsPadding()
+                        .fillMaxSize()
                 ) {
-                    IconButton(
+                    Box(
                         modifier = Modifier
+                            .fillMaxWidth()
+                            .height(topAppBarHeight_64)
+                    ) {
+                        IconButton(modifier = Modifier
 //                            .padding(start = padding_16)
                             .align(Alignment.CenterStart), onClick = {
-
+                            onEvent.invoke(ReportContract.Intent.NavigateToHomeScreen)
                         }) {
-                        Icon(
-                            painterResource(id = R.drawable.arrow2),
-                            contentDescription = "back",
-                            tint = colorWhite,
+                            Icon(
+                                painterResource(id = R.drawable.arrow2),
+                                contentDescription = "back",
+                                tint = colorWhite,
+                            )
+                        }
+
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = stringResource(R.string.forecast_report),
+                            fontSize = fontSize_24,
+                            color = colorWhite
                         )
                     }
 
                     Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = stringResource(R.string.forecast_report),
-                        fontSize = fontSize_24,
-                        color = colorWhite
-                    )
-                }
-
-                Text(
-                    text = stringResource(R.string.today),
-                    color = colorWhite,
-                    modifier = Modifier.padding(
-                        start = padding_32,
-                        top = it.calculateTopPadding() + padding_16,
+                        text = stringResource(R.string.today),
+                        color = colorWhite,
+                        modifier = Modifier.padding(
+                            start = padding_32,
+                            top = it.calculateTopPadding() + padding_16,
 //                    bottom = padding_16
-                    ),
-                    fontSize = fontSize_22
-                )
+                        ),
+                        fontSize = fontSize_22
+                    )
 
-                LazyRow(
+                    LazyRow(
+                        modifier = Modifier
+                            .padding(end = padding_5)
+                            .fillMaxWidth()
+                    ) {
+                        var isNow = false
+                        var nowHour =
+                            LocalDateTime.now(ZoneId.of(weatherData.locationData.timezoneId)).hour
+                        if (nowHour > 0) {
+                            nowHour -= 1
+                            isNow = true
+                        }
+                        items(count = 24) {
+                            val item = weatherData.hourlyData[it + nowHour]
+                            HourlyItem(
+                                text = item.hour,
+                                temperature = "${item.temperature}°",
+                                onClick = {
+                                    onEvent.invoke(
+                                        ReportContract.Intent.NavigateToHourInfoScreen(item)
+                                    )
+                                }, isNow = isNow && it == 1,
+                                isFirst = it == 0,
+                                icon = item.conditionData.icon
+                            )
+                        }
+                    }
+
+                    Text(
+                        text = stringResource(R.string.next_forecast),
+                        color = colorWhite,
+                        fontSize = fontSize_22,
+                        modifier = Modifier.padding(start = padding_32, bottom = padding_28)
+                    )
+
+                    LazyColumn(
+                        Modifier
+                            .padding(horizontal = padding_16)
+                            .fillMaxHeight()
+                    ) {
+                        items(count = weatherData.dailyData.size) {
+                            val item = weatherData.dailyData[it]
+                            DailyItem(
+                                item.date.dayOfWeek.toString(),
+                                "${item.date.month},${item.date.dayOfMonth}",
+                                icon = item.conditionData.icon,
+                                onClick = {
+                                    onEvent.invoke(
+                                        ReportContract.Intent.NavigateToDayInfoScreen(
+                                            item
+                                        )
+                                    )
+                                },
+                                temperature = "${item.avgTemperature}°"
+                            )
+                        }
+                    }
+
+                }
+
+                ElevationCustom(
                     modifier = Modifier
-                        .padding(start = padding_32, end = padding_5)
-                        .fillMaxWidth()
-                ) {
-                    items(count = 7) {
-                        SmallItem(text = "01:00", temperature = "18°")
-                    }
-                }
-
-                Text(
-                    text = stringResource(R.string.next_forecast),
-                    color = colorWhite,
-                    fontSize = fontSize_22,
-                    modifier = Modifier.padding(start = padding_32, bottom = padding_28)
+                        .offset(x = (-110).dp, y = (70).dp)
+                        .align(Alignment.BottomStart)
                 )
-
-                LazyColumn(
-                    Modifier
-                        .padding(horizontal = padding_16)
-                        .fillMaxHeight()
-                ) {
-                    items(count = 9) {
-                        XLargeItem("Friday", "March,02", "17°")
-                    }
-                }
-
             }
-
-            ElevationCustom(
-                modifier = Modifier
-                    .offset(x = (-110).dp, y = (70).dp)
-                    .align(Alignment.BottomStart)
-            )
         }
     }
 }

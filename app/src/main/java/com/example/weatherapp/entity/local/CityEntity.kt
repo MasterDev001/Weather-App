@@ -6,11 +6,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "cityTable")
 data class  CityEntity(
     @PrimaryKey
-    val id:Int,
+    val key:String,
     val cityName: String,
     val country: String,
-    val admin1: String,
-    val countryCode: String,
+    val region: String,
     val latitude: Double,
     val longitude: Double,
     val isCurrent:Boolean=false

@@ -1,11 +1,5 @@
 package com.example.weatherapp.app.screens.location
 
-import android.content.Context
-import android.content.pm.PackageManager
-import android.widget.Toast
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,10 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat
 import com.example.weatherapp.R
 import com.example.weatherapp.app.screens.card_Sizes_44
 import com.example.weatherapp.app.screens.card_Sizes_46
@@ -34,13 +26,12 @@ import com.example.weatherapp.app.screens.cornerRadius_8
 import com.example.weatherapp.app.screens.imageSize_24
 import com.example.weatherapp.app.screens.padding_16
 import com.example.weatherapp.app.screens.padding_3
-import com.example.weatherapp.presentation.view_models.location.LocationContract
 import com.example.weatherapp.ui.theme.backgroundColor
 import com.example.weatherapp.ui.theme.colorGray
 import com.example.weatherapp.ui.theme.colorWhite
 import com.example.weatherapp.ui.theme.placeHolderColor
-import com.example.weatherapp.ui.theme.xLargeItemCornerColor
-import com.example.weatherapp.ui.theme.xLargeItemSecondColor
+import com.example.weatherapp.ui.theme.dailyItemCornerColor
+import com.example.weatherapp.ui.theme.dailyItemSecondColor
 
 @Composable
 fun SearchRow(
@@ -61,7 +52,7 @@ fun SearchRow(
                 .height(card_Sizes_46)
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(xLargeItemCornerColor, backgroundColor)
+                        colors = listOf(dailyItemCornerColor, backgroundColor)
                     ), shape = RoundedCornerShape(cornerRadius_8)
                 )
         ) {
@@ -72,7 +63,7 @@ fun SearchRow(
                     .align(Alignment.BottomEnd)
                     .background(
                         brush = Brush.horizontalGradient(
-                            colors = listOf(xLargeItemSecondColor, backgroundColor)
+                            colors = listOf(dailyItemSecondColor, backgroundColor)
                         ), shape = RoundedCornerShape(cornerRadius_8)
                     )
             )
@@ -104,14 +95,12 @@ fun SearchRow(
                 .padding(start = padding_16)
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(xLargeItemCornerColor, backgroundColor)
+                        colors = listOf(dailyItemCornerColor, backgroundColor)
                     ),
                     shape = RoundedCornerShape(cornerRadius_8)
                 )
                 .size(card_Sizes_46)
-                .clickable {
-                    onLocationClick()
-                }
+
         ) {
             Box(
                 Modifier
@@ -119,9 +108,11 @@ fun SearchRow(
                     .align(Alignment.BottomEnd)
                     .background(
                         brush = Brush.horizontalGradient(
-                            colors = listOf(xLargeItemSecondColor, backgroundColor)
+                            colors = listOf(dailyItemSecondColor, backgroundColor)
                         ), shape = RoundedCornerShape(cornerRadius_8)
-                    )
+                    )  .clickable {
+                    onLocationClick()
+                }
             )
             Image(
                 modifier = Modifier

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WeatherApp</string>
+    <string name="app_name">Weather</string>
     <string name="hourly_forecast">Hourly Forecast</string>
     <string name="weekly_forecast">Weekly Forecast</string>
     <string name="forecast_report">Forecast Report</string>
@@ -18,4 +18,9 @@
     <string name="sunset">SUNSET</string>
     <string name="cities_should_be_no_more_than_5">"Cities should be no more than 5 "</string>
     <string name="location_access_is_mandatory_to_use_this_feature">Location access is mandatory to use this feature!!</string>
+    <string name="now">Now</string>
+    <string name="snow">SNOW</string>
+    <string name="ok">Ok</string>
+    <string name="error">Error</string>
+    <string name="couldn_t_retrieve_location">Couldn\'t retrieve location.</string>
 </resources>

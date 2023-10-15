@@ -2,9 +2,6 @@ package com.example.weatherapp.presentation.view_models.location
 
 import android.content.Context
 import androidx.activity.result.IntentSenderRequest
-import com.example.weatherapp.domain.model.CityData
-import com.example.weatherapp.presentation.view_models.home.HomeContract
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface LocationViewModel {
