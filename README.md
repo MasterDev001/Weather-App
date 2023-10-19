@@ -19,3 +19,5 @@ https://github.com/MasterDev001/WeatherApp/assets/62707356/7a36838d-4991-4c2c-a6
 - [Lottie Animation](https://github.com/airbnb/lottie/blob/master/android-compose.md)
 - [Room Database](https://developer.android.com/training/data-storage/room)
 - MVI Patter
+## APK
+- Get APK [Weather.apk](https://github.com/MasterDev001/WeatherApp/releases/download/weather_app_jetpack/Weather.apk)
