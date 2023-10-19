@@ -1,5 +1,6 @@
 package com.example.weatherapp.entity.remote
 
+import com.example.weatherapp.entity.remote.weather.CityDto
 import com.example.weatherapp.entity.remote.weather.WeatherDto
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -11,6 +12,11 @@ interface WeatherApi {
         @Query("q") location: String,
         @Query("days") days: Int
     ): WeatherDto
+
+    @GET("v1/search.json?key=afcc84f4bb2e44e8b2c145704230610")
+    suspend fun getCityListData(
+        @Query("q") location: String,
+    ): List<CityDto>
 
 
 }

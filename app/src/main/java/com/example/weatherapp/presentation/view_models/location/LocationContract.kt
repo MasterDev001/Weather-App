@@ -6,7 +6,9 @@ interface LocationContract {
 
     sealed interface Intent {
         class AddCityWithName(val cityName:String) : Intent
+        class ListenCityName(val cityName:String) : Intent
         object AddCityWithLocation:Intent
+        object ClearCityList:Intent
         class ChangeCurrentCity(val cityKey:String):Intent
         object NavigateToHome:Intent
         class DeleteCity(val cityData: CityData,val index: Int): Intent

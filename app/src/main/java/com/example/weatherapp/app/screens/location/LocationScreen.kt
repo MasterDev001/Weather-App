@@ -57,9 +57,13 @@ import com.example.weatherapp.app.screens.fontSize_24
 import com.example.weatherapp.app.screens.padding_16
 import com.example.weatherapp.app.screens.padding_22
 import com.example.weatherapp.app.screens.padding_32
+import com.example.weatherapp.app.screens.padding_38
 import com.example.weatherapp.app.screens.progressBarSize_130
 import com.example.weatherapp.app.screens.progressBarStrokeWith_8
 import com.example.weatherapp.app.screens.topAppBarHeight_64
+import com.example.weatherapp.app.screens.topPadding_55
+import com.example.weatherapp.app.screens.topPadding_76
+import com.example.weatherapp.domain.model.CityData
 import com.example.weatherapp.presentation.view_models.location.LocationContract
 import com.example.weatherapp.presentation.view_models.location.LocationViewModel
 import com.example.weatherapp.presentation.view_models.location.LocationViewModelImpl
@@ -89,12 +93,11 @@ class LocationScreen : AndroidScreen() {
         var searchText by rememberSaveable { mutableStateOf("") }
         var onLocationClick by rememberSaveable { mutableStateOf(false) }
         val context = LocalContext.current
-        val toastText = stringResource(R.string.cities_should_be_no_more_than_5)
         val gpsToastText = stringResource(R.string.location_access_is_mandatory_to_use_this_feature)
         val isLocationEnabled by viewModel.isLocationEnabled.collectAsState()
         val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.trash))
         var alertDialogState by rememberSaveable { mutableStateOf(false) }
-
+        val cityList by viewModel.cityLst.collectAsState()
 
         LaunchedEffect(key1 = uiState.errorMessage) {
             alertDialogState = true
@@ -112,8 +115,11 @@ class LocationScreen : AndroidScreen() {
 
         if (onLocationClick) {
             onLocationClick = false
-            onPermissionAccessClicked(
-                isLocationEnabled, viewModel, context, locationRequestLauncher, onEvent
+            onPermissionAccessClicked(isLocationEnabled,
+                viewModel,
+                context,
+                locationRequestLauncher,
+                onAccess = { onEvent.invoke(LocationContract.Intent.AddCityWithLocation) }
             )
         }
 
@@ -127,9 +133,11 @@ class LocationScreen : AndroidScreen() {
 
             ) {
 
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .navigationBarsPadding()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+            ) {
                 ElevationCustom(
                     modifier = Modifier
                         .size(customElevationSize_200)
@@ -186,83 +194,98 @@ class LocationScreen : AndroidScreen() {
                             .height(padding_22)
                     )
 
-                    SearchRow(
-                        Modifier
-                            .padding(horizontal = padding_16)
-                            .fillMaxWidth(),
-                        searchText = searchText,
-                        onSearchClick = {
-                            if (uiState.cityData.orEmpty().size < 15) onEvent.invoke(
-                                LocationContract.Intent.AddCityWithName(searchText.trim())
-                            )
-                            else {
-                                Toast.makeText(
-                                    context, toastText, Toast.LENGTH_SHORT
-                                ).show()
+                    Box {
+                        if (uiState.errorMessage != null && alertDialogState) {
+                            CustomAlertDialog(message = uiState.errorMessage!!) {
+                                alertDialogState = false
                             }
-                        },
-                        onLocationClick = {
-                            if (hasLocationPermission(context)) {
-                                onLocationClick = true
-                            } else {
-                                requestPermissionLauncher.launch(
-                                    arrayOf(
-                                        Manifest.permission.ACCESS_FINE_LOCATION,
-                                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                                    )
+                        }
+                        if (uiState.isLoading) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(progressBarSize_130),
+                                    strokeCap = StrokeCap.Round,
+                                    strokeWidth = progressBarStrokeWith_8,
+                                    color = iconColor
                                 )
                             }
-                        }) { searchText = it }
-
-                    if (uiState.errorMessage != null && alertDialogState) {
-                        CustomAlertDialog(message = uiState.errorMessage!!) {
-                            alertDialogState = false
-                        }
-                    }
-                    if (uiState.isLoading) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(progressBarSize_130),
-                                strokeCap = StrokeCap.Round,
-                                strokeWidth = progressBarStrokeWith_8,
-                                color = iconColor
-                            )
-                        }
-                    } else {
-                        if (uiState.cityData != null) {
-                            LazyVerticalGrid(
-                                modifier = Modifier
-                                    .padding(top = padding_22)
-                                    .fillMaxWidth(),
-                                columns = GridCells.Fixed(2),
-                                contentPadding = PaddingValues(padding_16), //layout padding
-                                horizontalArrangement = Arrangement.spacedBy(padding_16), ///item between padding
-                                verticalArrangement = Arrangement.spacedBy(padding_16)///item between padding
-                            ) {
-                                items(uiState.cityData.orEmpty().size) {
-                                    CityItem(
-                                        cityData = uiState.cityData.orEmpty()[it],
-                                        onClick = {
-                                            onEvent.invoke(
-                                                LocationContract.Intent.ChangeCurrentCity(
-                                                    uiState.cityData!![it].key
+                        } else {
+                            if (uiState.cityData != null) {
+                                LazyVerticalGrid(
+                                    modifier = Modifier
+                                        .padding(top = topPadding_76)
+                                        .fillMaxWidth().align(Alignment.BottomStart),
+                                    columns = GridCells.Fixed(2),
+                                    contentPadding = PaddingValues(padding_16), //layout padding
+                                    horizontalArrangement = Arrangement.spacedBy(padding_16), ///item between padding
+                                    verticalArrangement = Arrangement.spacedBy(padding_16)///item between padding
+                                ) {
+                                    items(uiState.cityData.orEmpty().size) {
+                                        CityItem(cityData = uiState.cityData.orEmpty()[it],
+                                            onClick = {
+                                                onEvent.invoke(
+                                                    LocationContract.Intent.ChangeCurrentCity(
+                                                        uiState.cityData!![it].key
+                                                    )
                                                 )
-                                            )
-                                        }, composition = composition,
-                                        onDelete = { cityData ->
-                                            onEvent.invoke(
-                                                LocationContract.Intent.DeleteCity(
-                                                    cityData, it
+                                            },
+                                            composition = composition,
+                                            onDelete = { cityData ->
+                                                onEvent.invoke(
+                                                    LocationContract.Intent.DeleteCity(
+                                                        cityData, it
+                                                    )
                                                 )
-                                            )
-                                        }, isDeletable = uiState.cityData!!.size > 1
-                                    )
+                                            },
+                                            isDeletable = uiState.cityData!!.size > 1
+                                        )
+                                    }
                                 }
                             }
                         }
+                        SearchRow(
+                            Modifier
+                                .padding(horizontal = padding_16)
+                                .fillMaxWidth().align(Alignment.TopStart),
+                            searchText = searchText,
+                            cityList = cityList,
+                            onSearchClick = {
+                                onEvent.invoke(LocationContract.Intent.AddCityWithName(searchText.trim()))
+                                searchText = ""
+                            },
+                            onLocationClick = {
+                                if (hasLocationPermission(context)) {
+                                    onLocationClick = true
+                                } else {
+                                    requestPermissionLauncher.launch(
+                                        arrayOf(
+                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                                        )
+                                    )
+                                }
+                            },
+                            onValueChange = {
+                                searchText = it
+                                if (searchText.isNotEmpty()) onEvent.invoke(
+                                    LocationContract.Intent.ListenCityName(
+                                        searchText.trim()
+                                    )
+                                )
+                            },
+                            onCityClick = {
+                                onEvent.invoke(LocationContract.Intent.AddCityWithName(searchText.trim()))
+                                searchText = ""
+                            },
+                            onActiveChange = {
+                                if (!it) {
+                                    searchText = ""
+                                    onEvent.invoke(LocationContract.Intent.ClearCityList)
+                                }
+                            })
                     }
                 }
                 ElevationCustom(

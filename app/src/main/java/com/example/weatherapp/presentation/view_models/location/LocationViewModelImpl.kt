@@ -13,10 +13,12 @@ import com.example.weatherapp.R
 import com.example.weatherapp.app.navigation.AppNavigator
 import com.example.weatherapp.app.screens.home.HomeScreen
 import com.example.weatherapp.common.ResultData
+import com.example.weatherapp.domain.model.CityData
 import com.example.weatherapp.domain.usecase.locationUseCase.GetLocationUseCase
 import com.example.weatherapp.domain.usecase.cityUseCase.AddCityUseCase
 import com.example.weatherapp.domain.usecase.cityUseCase.DeleteCityUseCase
 import com.example.weatherapp.domain.usecase.cityUseCase.GetAllCitiesUseCase
+import com.example.weatherapp.domain.usecase.cityUseCase.GetCityListUseCase
 import com.example.weatherapp.domain.usecase.cityUseCase.SelectCurrentCityUseCase
 import com.example.weatherapp.domain.usecase.locationUseCase.EnableLocationRequestUseC
 import com.example.weatherapp.domain.usecase.locationUseCase.IsGpsConnectedUseCase
@@ -24,6 +26,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,12 +41,15 @@ class LocationViewModelImpl @Inject constructor(
     private val locationRequestUseC: EnableLocationRequestUseC,
     private val selectCurrentCityUseCase: SelectCurrentCityUseCase,
     private val deleteCityUseCase: DeleteCityUseCase,
+    private val getCityListUseCase: GetCityListUseCase,
     private val context: Application,
     private val appNavigator: AppNavigator
 ) : ViewModel(), LocationViewModel {
 
     override val uiState = MutableStateFlow(LocationContract.UiState(isLoading = false))
     override val isLocationEnabled = MutableStateFlow(false)
+
+    override val cityLst = MutableStateFlow(listOf<CityData>())
 
     private var broadCast: LocationProviderChangedReceiver? = null
 
@@ -99,12 +106,39 @@ class LocationViewModelImpl @Inject constructor(
                             }
 
                             is ResultData.Error -> {
-                                uiState.value = LocationContract.UiState(errorMessage = result.message)
+                                uiState.value =
+                                    LocationContract.UiState(errorMessage = result.message)
                             }
 
                             is ResultData.Loading -> {
                                 uiState.value =
                                     LocationContract.UiState(isLoading = result.isLoading)
+                            }
+                        }
+                    }
+                }
+            }
+
+            is LocationContract.Intent.ClearCityList -> {
+                viewModelScope.launch { cityLst.emit(emptyList()) }
+            }
+
+            is LocationContract.Intent.ListenCityName -> {
+                viewModelScope.launch {
+                    reduce { it.copy(isLoading = true) }
+                    getCityListUseCase.invoke(intent.cityName).collect { result ->
+                        reduce { it.copy(isLoading = false) }
+                        when (result) {
+                            is ResultData.Success -> {
+                                cityLst.emit(result.data)
+                            }
+
+                            is ResultData.Error -> {
+                                reduce { it.copy(errorMessage = result.message) }
+                            }
+
+                            is ResultData.Loading -> {
+                                reduce { it.copy(isLoading = false) }
                             }
                         }
                     }
@@ -118,11 +152,13 @@ class LocationViewModelImpl @Inject constructor(
                         reduce { it.copy(isLoading = false) }
                         when (result) {
                             is ResultData.Success -> {
+                                cityLst.emit(emptyList())
                                 getCityList()
                             }
 
                             is ResultData.Error -> {
-                                uiState.value = LocationContract.UiState(errorMessage = result.message)
+                                uiState.value =
+                                    LocationContract.UiState(errorMessage = result.message)
                             }
 
                             is ResultData.Loading -> {
@@ -137,7 +173,7 @@ class LocationViewModelImpl @Inject constructor(
             is LocationContract.Intent.AddCityWithLocation -> {
                 viewModelScope.launch {
                     reduce { it.copy(isLoading = true) }
-                    delay(5500)
+                    delay(6000)
                     getLocationUseCase.invoke()?.let { location ->
                         addCityUseCase.invoke("${location.latitude},${location.longitude}")
                             .collect { result ->
@@ -159,7 +195,12 @@ class LocationViewModelImpl @Inject constructor(
                                 }
                             }
                     } ?: kotlin.run {
-                        reduce { it.copy(isLoading = false, errorMessage = context.getString(R.string.couldn_t_retrieve_location)) }
+                        reduce {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = context.getString(R.string.couldn_t_retrieve_location)
+                            )
+                        }
                     }
                 }
             }
@@ -183,7 +224,8 @@ class LocationViewModelImpl @Inject constructor(
                             }
 
                             is ResultData.Error -> {
-                                uiState.value = LocationContract.UiState(errorMessage = result.message)
+                                uiState.value =
+                                    LocationContract.UiState(errorMessage = result.message)
                             }
 
                             is ResultData.Loading -> {

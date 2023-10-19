@@ -12,6 +12,7 @@ import com.example.weatherapp.domain.model.InfoData
 import com.example.weatherapp.domain.model.LocationData
 import com.example.weatherapp.domain.model.WeatherData
 import com.example.weatherapp.entity.local.CityEntity
+import com.example.weatherapp.entity.remote.weather.CityDto
 import com.example.weatherapp.entity.remote.weather.ConditionDto
 import com.example.weatherapp.entity.remote.weather.CurrentDto
 import com.example.weatherapp.entity.remote.weather.HourDto
@@ -29,6 +30,17 @@ fun CityEntity.toCityData(): CityData {
         latitude = latitude,
         longitude = longitude,
         isCurrent = isCurrent
+    )
+}
+
+fun CityDto.cityDtoToCityData(): CityData {
+    return CityData(
+        key = name + region + country,
+        cityName = name,
+        country = country,
+        region = region,
+        latitude = lat,
+        longitude = lon,
     )
 }
 

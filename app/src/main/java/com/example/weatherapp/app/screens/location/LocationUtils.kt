@@ -63,14 +63,14 @@ fun onPermissionAccessClicked(
     viewModel: LocationViewModel,
     context: Context,
     locationRequestLauncher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>,
-    onEvent: (intent: LocationContract.Intent) -> Unit
+    onAccess:()->Unit
 ) {
     if (!isLocationEnabled) {
         viewModel.enableLocationRequest(context) {//Call this if GPS is OFF.
             locationRequestLauncher.launch(it)//Launch it to show the prompt.
         }
     } else {
-        onEvent.invoke(LocationContract.Intent.AddCityWithLocation)
+        onAccess()
     }
 }
 

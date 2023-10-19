@@ -45,12 +45,10 @@ import com.example.weatherapp.app.screens.CustomAlertDialog
 import com.example.weatherapp.app.screens.HourlyItem
 import com.example.weatherapp.app.screens.cornerRadius_40
 import com.example.weatherapp.app.screens.fontSize_24
-import com.example.weatherapp.app.screens.fontSize_28
 import com.example.weatherapp.app.screens.fontSize_34
 import com.example.weatherapp.app.screens.imageSize_76
 import com.example.weatherapp.app.screens.lottieSize_220
 import com.example.weatherapp.app.screens.padding_16
-import com.example.weatherapp.app.screens.padding_22
 import com.example.weatherapp.app.screens.padding_32
 import com.example.weatherapp.app.screens.padding_5
 import com.example.weatherapp.app.screens.topPadding_55
@@ -124,10 +122,11 @@ class HomeScreen : AppScreen() {
             Box(Modifier.fillMaxSize()) {
                 Image(
                     modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(id = R.drawable.back3),
+                    painter = painterResource(id = R.drawable.background),
                     contentScale = ContentScale.Crop,
                     contentDescription = ""
                 )
+
 
                 Box(
                     modifier = Modifier
